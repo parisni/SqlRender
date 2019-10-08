@@ -736,27 +736,23 @@ spark,"CONVERT(VARCHAR,@date,112)","TO_CHAR(@date, 'YYYYMMDD')"
 spark,GETDATE(),CURRENT_DATE
 spark,+ '@a',|| '@a'
 spark,'@a' +,'@a' ||
-spark,CAST(@a AS varchar(@b)) +,CAST(@a AS varchar(@b)) ||
-spark,+ CAST(@a AS varchar(@b)),|| CAST(@a AS varchar(@b))
-spark,CAST(@a AS varchar) +,CAST(@a AS varchar) ||
-spark,+ CAST(@a AS varchar),|| CAST(@a AS varchar)
+spark,CAST(@a AS varchar(@b)) +,SUBSTRING(CAST(@a AS string), 0, @b) ||
+spark,+ CAST(@a AS varchar(@b)),|| SUBSTRING(CAST(@a AS string), 0, @b)
+spark,CAST(@a AS varchar) +,CAST(@a AS string) ||
+spark,+ CAST(@a AS varchar),|| CAST(@a AS string)
 spark,"DATEFROMPARTS(@year,@month,@day)","TO_DATE(TO_CHAR(@year,'0000')||'-'||TO_CHAR(@month,'00')||'-'||TO_CHAR(@day,'00'), 'YYYY-MM-DD')"
 spark,"DATETIMEFROMPARTS(@year,@month,@day,@hour,@minute,@second,@ms)","TO_DATE(TO_CHAR(@year,'0000')||'-'||TO_CHAR(@month,'00')||'-'||TO_CHAR(@day,'00')||' '||TO_CHAR(@hour,'00')||':'||TO_CHAR(@minute,'00')||':'||TO_CHAR(@second,'00'), 'YYYY-MM-DD HH24:MI:SS')"
-spark,YEAR(@date),EXTRACT(YEAR FROM @date)
-spark,MONTH(@date),EXTRACT(MONTH FROM @date)
-spark,DAY(@date),EXTRACT(DAY FROM @date)
 spark,EOMONTH(@date),"(DATE_TRUNC('MONTH', @date) + INTERVAL '1 MONTH - 1 day')::DATE"
 spark,STDEV(@a),STDDEV(@a)
 spark,VAR(@a),VARIANCE(@a)
-spark,RAND(),RANDOM()
-spark,LEN(@a),CHAR_LENGTH(@a)
+spark,LEN(@a),LENGTH(@a)
 spark,"CHARINDEX(@a,@b)","STRPOS(@b,@a)"
 spark,"LOG(@expression,@base)","<L_O_G>(CAST((@base) AS NUMERIC),CAST((@expression) AS NUMERIC))"
 spark,LOG(@expression),LN(CAST((@expression) AS REAL))
 spark,<L_O_G>,LOG
 spark,LOG10(@expression),"LOG(10,CAST((@expression) AS NUMERIC))"
 spark,"ISNULL(@a,@b)","COALESCE(@a,@b)"
-spark,"ISNUMERIC(@a)","CASE WHEN (CAST(@a AS VARCHAR) ~ '^([0-9]+\.?[0-9]*|\.[0-9]+)$') THEN 1 ELSE 0 END"
+spark,"ISNUMERIC(@a)","CASE WHEN (CAST(@a AS string) RLIKE '^([0-9]+\.?[0-9]*|\.[0-9]+)$') THEN 1 ELSE 0 END"
 spark,COUNT_BIG(@a),COUNT(@a)
 spark,SQUARE(@a),((@a)*(@a))
 spark,NEWID(),UUID()
@@ -772,7 +768,7 @@ spark,PRIMARY KEY NONCLUSTERED,
 spark,DATETIME,TIMESTAMP
 spark,DATETIME2,TIMESTAMP
 spark,VARCHAR(MAX),String
-spark,FLOAT,NUMERIC
+spark,VARCHAR,String
 spark,WITH @a AS @b SELECT @c INTO #@d FROM @e;,CREATE TABLE @d\nAS\nWITH @a AS @b SELECT\n@c\nFROM\n@e;
 spark,WITH @a AS @b SELECT @c INTO @d FROM @e;,CREATE TABLE @d\nAS\nWITH @a AS @b SELECT\n@c\nFROM\n@e;
 spark,SELECT @a INTO #@b FROM @c;,CREATE TABLE @b\nAS\nSELECT\n@a\nFROM\n@c;
